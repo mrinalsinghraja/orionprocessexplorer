@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Privacy Policy — Orion Process Explorer</title>
+<meta name="description" content="Orion Process Explorer Privacy Policy — we collect nothing. On-device AI, zero data transmission, no accounts required.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{--purple:#6C63FF;--violet:#A78BFA;--cyan:#22D3EE;--green:#4ADE80;--bg:#08080F;--bg2:#0E0E1A;--white:#F0F0FF;--muted:rgba(240,240,255,0.55);--faint:rgba(240,240,255,0.3);--glass:rgba(255,255,255,0.05);--glass-border:rgba(255,255,255,0.1)}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--white);font-family:'Syne',sans-serif;overflow-x:hidden;line-height:1.7}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(108,99,255,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(108,99,255,0.03) 1px,transparent 1px);background-size:60px 60px;pointer-events:none;z-index:0}
+.orb{position:fixed;border-radius:50%;filter:blur(120px);pointer-events:none;z-index:0}
+.orb1{width:500px;height:500px;background:rgba(108,99,255,0.1);top:-150px;right:-100px}
+.orb2{width:350px;height:350px;background:rgba(34,211,238,0.07);bottom:10%;left:-80px}
+
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:18px 40px;display:flex;align-items:center;justify-content:space-between;background:rgba(8,8,15,0.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--glass-border)}
+.nav-logo{font-size:1rem;font-weight:800;letter-spacing:0.06em;background:linear-gradient(135deg,var(--violet),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;text-decoration:none}
+.nav-back{color:var(--muted);text-decoration:none;font-size:0.82rem;font-weight:600;display:flex;align-items:center;gap:6px;transition:color 0.2s}
+.nav-back:hover{color:var(--white)}
+
+.hero{position:relative;z-index:1;padding:140px 40px 60px;text-align:center;max-width:720px;margin:0 auto}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(74,222,128,0.1);border:1px solid rgba(74,222,128,0.25);border-radius:20px;padding:6px 16px;font-size:0.75rem;font-weight:600;letter-spacing:0.08em;color:var(--green);text-transform:uppercase;margin-bottom:24px}
+.hero-badge span{width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 6px var(--green);display:inline-block}
+.hero h1{font-size:clamp(2rem,4vw,3rem);font-weight:800;letter-spacing:-0.03em;margin-bottom:16px}
+.hero h1 span{background:linear-gradient(135deg,var(--violet),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero p{color:var(--muted);font-size:1rem;line-height:1.7}
+.updated{display:inline-block;margin-top:16px;font-size:0.78rem;color:var(--faint);font-family:'JetBrains Mono',monospace;background:var(--glass);border:1px solid var(--glass-border);padding:4px 12px;border-radius:6px}
+
+.content{position:relative;z-index:1;max-width:760px;margin:0 auto;padding:0 40px 80px}
+
+.tl-dr{background:linear-gradient(135deg,rgba(74,222,128,0.08),rgba(34,211,238,0.05));border:1px solid rgba(74,222,128,0.2);border-radius:16px;padding:28px 32px;margin-bottom:40px}
+.tl-dr-title{font-size:0.72rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--green);margin-bottom:14px}
+.tl-dr-items{display:flex;flex-direction:column;gap:10px}
+.tl-dr-item{display:flex;align-items:center;gap:10px;font-size:0.92rem;color:var(--muted)}
+.check{width:18px;height:18px;border-radius:5px;background:rgba(74,222,128,0.15);border:1px solid rgba(74,222,128,0.3);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+
+.section{margin-bottom:36px;background:var(--glass);border:1px solid var(--glass-border);border-radius:16px;overflow:hidden}
+.section-head{padding:18px 24px;border-bottom:1px solid var(--glass-border);display:flex;align-items:center;gap:10px}
+.section-icon{font-size:18px}
+.section-title-text{font-size:1rem;font-weight:700;color:var(--white)}
+.section-body{padding:20px 24px;display:flex;flex-direction:column;gap:12px}
+.section-body p{font-size:0.9rem;color:var(--muted);line-height:1.7}
+.section-body strong{color:var(--white);font-weight:600}
+
+.data-table{width:100%;border-collapse:collapse;font-size:0.85rem;margin-top:8px}
+.data-table th{padding:8px 12px;text-align:left;color:var(--faint);font-size:0.72rem;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;border-bottom:1px solid var(--glass-border)}
+.data-table td{padding:10px 12px;color:var(--muted);border-bottom:1px solid rgba(255,255,255,0.04)}
+.data-table td:first-child{color:var(--white);font-weight:500}
+.data-table tr:last-child td{border-bottom:none}
+.badge-no{display:inline-block;font-size:0.7rem;font-weight:600;padding:2px 8px;border-radius:6px;background:rgba(74,222,128,0.12);color:var(--green);border:1px solid rgba(74,222,128,0.25)}
+.badge-yes{display:inline-block;font-size:0.7rem;font-weight:600;padding:2px 8px;border-radius:6px;background:rgba(108,99,255,0.12);color:var(--violet);border:1px solid rgba(108,99,255,0.25)}
+
+.contact-box{background:linear-gradient(135deg,rgba(108,99,255,0.08),rgba(34,211,238,0.05));border:1px solid rgba(108,99,255,0.2);border-radius:16px;padding:28px 32px;text-align:center;margin-top:40px}
+.contact-box h3{font-size:1.1rem;font-weight:700;margin-bottom:8px}
+.contact-box p{color:var(--muted);font-size:0.9rem;margin-bottom:16px}
+.contact-box a{color:var(--cyan);text-decoration:none;font-weight:600;font-size:0.95rem}
+.contact-box a:hover{text-decoration:underline}
+
+footer{position:relative;z-index:1;padding:32px 40px;border-top:1px solid var(--glass-border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;background:rgba(8,8,15,0.6)}
+.footer-brand{font-size:0.9rem;font-weight:700;background:linear-gradient(135deg,var(--violet),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.footer-copy{font-size:0.78rem;color:var(--faint)}
+.footer-links{display:flex;gap:18px}
+.footer-links a{color:var(--muted);text-decoration:none;font-size:0.8rem;transition:color 0.2s}
+.footer-links a:hover{color:var(--white)}
+@media(max-width:640px){nav{padding:14px 20px}.hero{padding:120px 20px 40px}.content{padding:0 20px 60px}footer{flex-direction:column;text-align:center;padding:24px 20px}}
+</style>
+</head>
+<body>
+<div class="orb orb1"></div>
+<div class="orb orb2"></div>
+
+<nav>
+  <a href="index.html" class="nav-logo">Orion Process Explorer</a>
+  <a href="index.html" class="nav-back">← Back to home</a>
+</nav>
+
+<div class="hero">
+  <div class="hero-badge"><span></span> Privacy First</div>
+  <h1>Privacy <span>Policy</span></h1>
+  <p>We built Orion Process Explorer with one rule: collect nothing. Here's exactly what that means.</p>
+  <span class="updated">Last updated: April 2026</span>
+</div>
+
+<div class="content">
+
+  <!-- TL;DR -->
+  <div class="tl-dr">
+    <div class="tl-dr-title">TL;DR — The short version</div>
+    <div class="tl-dr-items">
+      <div class="tl-dr-item"><div class="check"><svg width="10" height="10" viewBox="0 0 10 10"><path d="M2 5l2 2 4-4" stroke="#4ADE80" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg></div>We collect zero personal data — nothing about you or your device</div>
+      <div class="tl-dr-item"><div class="check"><svg width="10" height="10" viewBox="0 0 10 10"><path d="M2 5l2 2 4-4" stroke="#4ADE80" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg></div>All AI runs on-device via Apple Intelligence — nothing leaves your system</div>
+      <div class="tl-dr-item"><div class="check"><svg width="10" height="10" viewBox="0 0 10 10"><path d="M2 5l2 2 4-4" stroke="#4ADE80" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg></div>No analytics, no crash reporting, no telemetry of any kind</div>
+      <div class="tl-dr-item"><div class="check"><svg width="10" height="10" viewBox="0 0 10 10"><path d="M2 5l2 2 4-4" stroke="#4ADE80" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg></div>No account required — ever</div>
+      <div class="tl-dr-item"><div class="check"><svg width="10" height="10" viewBox="0 0 10 10"><path d="M2 5l2 2 4-4" stroke="#4ADE80" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg></div>No third-party SDKs, no advertising networks</div>
+    </div>
+  </div>
+
+  <!-- Section 1 -->
+  <div class="section">
+    <div class="section-head"><div class="section-icon">📋</div><div class="section-title-text">1. Introduction</div></div>
+    <div class="section-body">
+      <p>Orion Process Explorer ("the App") is developed and maintained by <strong>Mrinal Singh Raja</strong> ("Developer", "we", "us", "our"). This privacy policy explains our data practices — or more precisely, our complete absence of data collection.</p>
+      <p>By downloading or using the App, you acknowledge this privacy policy. If you have any questions, contact us at <strong>mrinalsinghraja@gmail.com</strong>.</p>
+    </div>
+  </div>
+
+  <!-- Section 2 -->
+  <div class="section">
+    <div class="section-head"><div class="section-icon">🚫</div><div class="section-title-text">2. Data we collect</div></div>
+    <div class="section-body">
+      <p><strong>We collect no personal data whatsoever.</strong> The App does not collect, store, transmit, or share any information about you, your device, your identity, or your usage patterns.</p>
+      <table class="data-table">
+        <tr><th>Data type</th><th>Collected?</th><th>Notes</th></tr>
+        <tr><td>Personal identifiers</td><td><span class="badge-no">Never</span></td><td>No name, email, Apple ID, or device ID</td></tr>
+        <tr><td>Usage analytics</td><td><span class="badge-no">Never</span></td><td>No screen views, taps, or sessions tracked</td></tr>
+        <tr><td>Crash reports</td><td><span class="badge-no">Never</span></td><td>No crash reporting SDK integrated</td></tr>
+        <tr><td>Process data</td><td><span class="badge-no">Never</span></td><td>Read locally, displayed locally, never transmitted</td></tr>
+        <tr><td>System information</td><td><span class="badge-no">Never</span></td><td>Read locally via sysctl, never sent anywhere</td></tr>
+        <tr><td>AI prompts or responses</td><td><span class="badge-no">Never</span></td><td>All AI inference is fully on-device</td></tr>
+        <tr><td>Location data</td><td><span class="badge-no">Never</span></td><td>Not requested, not used</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- Section 3 -->
+  <div class="section">
+    <div class="section-head"><div class="section-icon">🧠</div><div class="section-title-text">3. On-device AI (Apple Intelligence)</div></div>
+    <div class="section-body">
+      <p>All AI features in the App — including process explanations, the Orion Assistant chatbot, kill risk assessments, health summaries, and process name decoding — are powered by <strong>Apple Intelligence via the FoundationModels framework</strong>.</p>
+      <p>This means all AI inference runs <strong>entirely on your Apple Silicon device</strong>. No prompts, no process names, no system data, and no AI-generated responses are ever sent to any external server — including Apple's servers or the Developer's servers.</p>
+      <p>For more information on Apple Intelligence and privacy, see <a href="https://www.apple.com/privacy/" target="_blank" style="color:var(--cyan)">apple.com/privacy</a>.</p>
+    </div>
+  </div>
+
+  <!-- Section 4 -->
+  <div class="section">
+    <div class="section-head"><div class="section-icon">📡</div><div class="section-title-text">4. Network access</div></div>
+    <div class="section-body">
+      <p>The App requests network access for one purpose only: to display your <strong>public IP address</strong> on the Network screen. This is a standard read-only request to a public IP lookup service. No personal data is included in or associated with this request.</p>
+      <p>All other app functionality — process monitoring, system info, AI features, storage analysis — operates entirely offline with no network requests.</p>
+    </div>
+  </div>
+
+  <!-- Section 5 -->
+  <div class="section">
+    <div class="section-head"><div class="section-icon">🔐</div><div class="section-title-text">5. App sandbox & permissions</div></div>
+    <div class="section-body">
+      <p>The App operates within <strong>Apple's App Sandbox</strong>. The following entitlements are declared:</p>
+      <table class="data-table">
+        <tr><th>Entitlement</th><th>Purpose</th></tr>
+        <tr><td>App Sandbox</td><td>Standard macOS security boundary</td></tr>
+        <tr><td>Network client</td><td>Public IP address lookup only</td></tr>
+        <tr><td>User-selected files (read-only)</td><td>If user selects files for inspection</td></tr>
+      </table>
+      <p>The App does <strong>not</strong> request Full Disk Access, location access, camera, microphone, contacts, calendar, or any other sensitive permission.</p>
+    </div>
+  </div>
+
+  <!-- Section 6 -->
+  <div class="section">
+    <div class="section-head"><div class="section-icon">👶</div><div class="section-title-text">6. Children's privacy</div></div>
+    <div class="section-body">
+      <p>The App does not knowingly collect any information from children under the age of 13. Since we collect no data from anyone, this is satisfied by default.</p>
+    </div>
+  </div>
+
+  <!-- Section 7 -->
+  <div class="section">
+    <div class="section-head"><div class="section-icon">🔄</div><div class="section-title-text">7. Changes to this policy</div></div>
+    <div class="section-body">
+      <p>We may update this privacy policy from time to time. When we do, we will update the "Last updated" date at the top of this page. We will never introduce data collection without updating this policy and notifying users via an App Store update description.</p>
+      <p>Continued use of the App after any changes constitutes your acceptance of the updated policy.</p>
+    </div>
+  </div>
+
+  <!-- Section 8 -->
+  <div class="section">
+    <div class="section-head"><div class="section-icon">⚖️</div><div class="section-title-text">8. Your rights</div></div>
+    <div class="section-body">
+      <p>Since we collect no personal data, there is no data to access, correct, export, or delete. If you have any privacy-related questions or concerns, contact us at <strong>mrinalsinghraja@gmail.com</strong> and we will respond within 48 hours.</p>
+    </div>
+  </div>
+
+  <!-- Contact -->
+  <div class="contact-box">
+    <h3>Questions about privacy?</h3>
+    <p>We're happy to answer anything. Send us a message and we'll get back to you within 24 hours.</p>
+    <a href="mailto:mrinalsinghraja@gmail.com">mrinalsinghraja@gmail.com →</a>
+  </div>
+
+</div>
+
+<footer>
+  <div>
+    <div class="footer-brand">Orion Process Explorer</div>
+    <div class="footer-copy">© 2026 Mrinal Singh Raja</div>
+  </div>
+  <div class="footer-links">
+    <a href="index.html">Home</a>
+    <a href="https://github.com/mrinalsinghraja/orionprocessexplorer" target="_blank">GitHub</a>
+    <a href="mailto:mrinalsinghraja@gmail.com">Contact</a>
+    <a href="https://mrinalsinghraja.github.io/orionclean" target="_blank">OrionClean</a>
+  </div>
+</footer>
+</body>
+</html>

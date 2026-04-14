@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Orion Process Explorer — AI Process Monitor for macOS</title>
+<meta name="description" content="Real-time process monitoring with on-device Apple Intelligence. See every process, understand every daemon, optimise your system. Built for macOS 26.">
+<meta property="og:title" content="Orion Process Explorer">
+<meta property="og:description" content="AI-powered process monitor for macOS 26. On-device Apple Intelligence. Zero data collection.">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --purple: #6C63FF;
+  --violet: #A78BFA;
+  --cyan: #22D3EE;
+  --pink: #F472B6;
+  --green: #4ADE80;
+  --amber: #FBBF24;
+  --red: #F87171;
+  --bg: #08080F;
+  --bg2: #0E0E1A;
+  --bg3: #13131F;
+  --white: #F0F0FF;
+  --muted: rgba(240,240,255,0.55);
+  --faint: rgba(240,240,255,0.3);
+  --glass: rgba(255,255,255,0.05);
+  --glass-border: rgba(255,255,255,0.1);
+  --border: rgba(108,99,255,0.2);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--white);font-family:'Syne',sans-serif;overflow-x:hidden;line-height:1.6}
+
+/* Grid bg */
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(108,99,255,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(108,99,255,0.04) 1px,transparent 1px);background-size:60px 60px;pointer-events:none;z-index:0}
+
+/* Orbs */
+.orb{position:fixed;border-radius:50%;filter:blur(120px);pointer-events:none;z-index:0;animation:orbFloat 12s ease-in-out infinite}
+.orb1{width:600px;height:600px;background:rgba(108,99,255,0.14);top:-200px;left:-150px;animation-delay:0s}
+.orb2{width:450px;height:450px;background:rgba(34,211,238,0.10);top:100px;right:-150px;animation-delay:-4s}
+.orb3{width:350px;height:350px;background:rgba(167,139,250,0.09);bottom:10%;left:20%;animation-delay:-8s}
+.orb4{width:250px;height:250px;background:rgba(244,114,182,0.07);bottom:20%;right:10%;animation-delay:-2s}
+@keyframes orbFloat{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(25px,-20px) scale(1.04)}66%{transform:translate(-20px,28px) scale(0.96)}}
+
+/* Nav */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:18px 40px;display:flex;align-items:center;justify-content:space-between;background:rgba(8,8,15,0.8);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--glass-border)}
+.nav-logo{font-size:1.1rem;font-weight:800;letter-spacing:0.06em;background:linear-gradient(135deg,var(--violet),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;text-decoration:none}
+.nav-links{display:flex;gap:28px;align-items:center}
+.nav-links a{color:var(--muted);text-decoration:none;font-size:0.82rem;font-weight:600;letter-spacing:0.04em;transition:color 0.2s}
+.nav-links a:hover{color:var(--white)}
+.nav-cta{background:linear-gradient(135deg,var(--purple),var(--violet));color:#fff !important;padding:8px 20px;border-radius:20px;font-weight:700 !important;letter-spacing:0.04em;transition:opacity 0.2s !important}
+.nav-cta:hover{opacity:0.85}
+
+/* Hero */
+.hero{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:120px 40px 80px}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(108,99,255,0.12);border:1px solid rgba(108,99,255,0.3);border-radius:20px;padding:6px 16px;font-size:0.75rem;font-weight:600;letter-spacing:0.08em;color:var(--violet);text-transform:uppercase;margin-bottom:28px;animation:fadeUp 0.6s ease both}
+.hero-badge span{width:6px;height:6px;border-radius:50%;background:var(--violet);box-shadow:0 0 8px var(--violet);display:inline-block}
+.hero h1{font-size:clamp(2.8rem,6vw,5.2rem);font-weight:800;line-height:1.08;letter-spacing:-0.03em;margin-bottom:24px;animation:fadeUp 0.6s ease 0.1s both}
+.hero h1 span{background:linear-gradient(135deg,var(--violet),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-sub{font-size:1.15rem;color:var(--muted);max-width:560px;line-height:1.7;margin-bottom:40px;animation:fadeUp 0.6s ease 0.2s both}
+.hero-actions{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;animation:fadeUp 0.6s ease 0.3s both}
+.btn-primary{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,var(--purple),var(--violet));color:#fff;padding:14px 32px;border-radius:12px;font-weight:700;font-size:0.95rem;text-decoration:none;letter-spacing:0.02em;transition:all 0.2s}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(108,99,255,0.4)}
+.btn-secondary{display:inline-flex;align-items:center;gap:8px;background:var(--glass);border:1px solid var(--glass-border);color:var(--white);padding:14px 28px;border-radius:12px;font-weight:600;font-size:0.95rem;text-decoration:none;backdrop-filter:blur(8px);transition:all 0.2s}
+.btn-secondary:hover{border-color:rgba(255,255,255,0.25);background:rgba(255,255,255,0.08)}
+.hero-note{font-size:0.78rem;color:var(--faint);margin-top:16px;letter-spacing:0.03em;animation:fadeUp 0.6s ease 0.4s both}
+
+/* App window mockup */
+.hero-window{position:relative;z-index:1;width:100%;max-width:920px;margin:60px auto 0;animation:fadeUp 0.8s ease 0.4s both}
+.window-frame{background:rgba(14,14,26,0.9);border:1px solid var(--glass-border);border-radius:14px;overflow:hidden;backdrop-filter:blur(20px)}
+.window-bar{background:rgba(8,8,15,0.8);padding:12px 18px;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--glass-border)}
+.w-dot{width:12px;height:12px;border-radius:50%}
+.w-red{background:#FF5F57}.w-yellow{background:#FEBC2E}.w-green{background:#28C840}
+.w-title{font-size:12px;color:var(--muted);margin-left:auto;margin-right:auto;font-family:'JetBrains Mono',monospace;letter-spacing:0.04em}
+.window-content{display:grid;grid-template-columns:160px 1fr;min-height:340px}
+.w-sidebar{background:rgba(8,8,15,0.5);border-right:1px solid var(--glass-border);padding:14px 0}
+.w-logo{padding:0 14px 12px;border-bottom:1px solid var(--glass-border);margin-bottom:8px}
+.w-logo-text{font-size:14px;font-weight:800;background:linear-gradient(135deg,var(--violet),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.w-logo-sub{font-size:9px;color:var(--faint);letter-spacing:0.08em;text-transform:uppercase;margin-top:2px}
+.w-nav-label{font-size:9px;color:var(--faint);letter-spacing:0.1em;text-transform:uppercase;padding:8px 14px 3px}
+.w-nav-item{display:flex;align-items:center;gap:7px;padding:6px 14px;font-size:11px;color:var(--muted)}
+.w-nav-item.active{background:rgba(108,99,255,0.15);color:var(--violet);border-left:2px solid var(--violet)}
+.w-dot-nav{width:4px;height:4px;border-radius:50%;background:currentColor;opacity:0.6}
+.w-main{padding:14px;display:flex;flex-direction:column;gap:10px}
+.w-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--glass-border);border-radius:10px;overflow:hidden}
+.w-stat{background:var(--bg2);padding:10px 8px;text-align:center}
+.w-stat-val{font-size:16px;font-weight:700;font-family:'JetBrains Mono',monospace}
+.w-stat-lbl{font-size:9px;color:var(--faint);text-transform:uppercase;letter-spacing:0.08em;margin-top:2px}
+.w-card{background:var(--glass);border:1px solid var(--glass-border);border-radius:10px;overflow:hidden}
+.w-card-head{padding:8px 12px;border-bottom:1px solid var(--glass-border);display:flex;align-items:center;gap:6px}
+.w-card-title{font-size:11px;font-weight:600;color:var(--white)}
+.w-card-sub{font-size:10px;color:var(--faint);margin-left:auto}
+.w-proc{display:flex;align-items:center;gap:8px;padding:6px 12px;border-bottom:1px solid rgba(255,255,255,0.03)}
+.w-proc:last-child{border-bottom:none}
+.w-proc-icon{width:22px;height:22px;border-radius:6px;background:var(--glass);border:1px solid var(--glass-border);display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;color:var(--faint);flex-shrink:0}
+.w-proc-name{font-size:11px;font-weight:500;flex:1;color:var(--white)}
+.w-proc-pid{font-size:9px;color:var(--faint);font-family:'JetBrains Mono',monospace}
+.w-bar-wrap{width:55px}
+.w-bar{height:3px;border-radius:2px;background:rgba(255,255,255,0.07);overflow:hidden;margin-bottom:2px}
+.w-bar-fill{height:100%;border-radius:2px}
+.w-pct{font-size:9px;font-family:'JetBrains Mono',monospace;text-align:right}
+.w-mem{font-size:9px;color:var(--faint);font-family:'JetBrains Mono',monospace;width:46px;text-align:right}
+
+/* Stats strip */
+.stats-strip{position:relative;z-index:1;padding:40px;display:flex;justify-content:center;gap:60px;flex-wrap:wrap;border-top:1px solid var(--glass-border);border-bottom:1px solid var(--glass-border);background:rgba(14,14,26,0.5);backdrop-filter:blur(10px)}
+.stat-item{text-align:center}
+.stat-num{font-size:2.4rem;font-weight:800;letter-spacing:-0.03em;background:linear-gradient(135deg,var(--violet),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.stat-label{font-size:0.8rem;color:var(--muted);letter-spacing:0.04em;margin-top:2px}
+
+/* Section */
+section{position:relative;z-index:1;padding:100px 40px}
+.section-label{font-size:0.72rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--violet);margin-bottom:14px}
+.section-title{font-size:clamp(1.9rem,3.5vw,2.8rem);font-weight:800;line-height:1.15;letter-spacing:-0.02em;margin-bottom:18px}
+.section-title span{background:linear-gradient(135deg,var(--violet),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.section-sub{font-size:1.05rem;color:var(--muted);max-width:520px;line-height:1.7;margin-bottom:48px}
+.container{max-width:1100px;margin:0 auto}
+.center{text-align:center}
+.center .section-sub{margin-left:auto;margin-right:auto}
+
+/* Feature grid */
+.features-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}
+.feat-card{background:var(--glass);border:1px solid var(--glass-border);border-radius:16px;padding:28px;transition:all 0.25s;position:relative;overflow:hidden}
+.feat-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,var(--card-color,rgba(108,99,255,0.08)),transparent);opacity:0;transition:opacity 0.25s}
+.feat-card:hover{border-color:rgba(255,255,255,0.18);transform:translateY(-3px)}
+.feat-card:hover::before{opacity:1}
+.feat-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:18px;font-size:20px;background:var(--icon-bg,rgba(108,99,255,0.15));border:1px solid var(--icon-border,rgba(108,99,255,0.3))}
+.feat-title{font-size:1.05rem;font-weight:700;margin-bottom:8px;color:var(--white)}
+.feat-desc{font-size:0.9rem;color:var(--muted);line-height:1.6}
+.feat-tag{display:inline-block;margin-top:12px;font-size:0.72rem;font-weight:600;letter-spacing:0.06em;padding:3px 10px;border-radius:10px;background:var(--tag-bg,rgba(108,99,255,0.12));color:var(--tag-color,var(--violet));border:1px solid var(--tag-border,rgba(108,99,255,0.25))}
+
+/* AI section */
+.ai-section{background:linear-gradient(135deg,rgba(108,99,255,0.08),rgba(34,211,238,0.05));border:1px solid rgba(108,99,255,0.2);border-radius:20px;padding:48px;display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center}
+.ai-chat{background:rgba(8,8,15,0.7);border:1px solid var(--glass-border);border-radius:14px;overflow:hidden}
+.ai-chat-head{padding:12px 16px;border-bottom:1px solid var(--glass-border);display:flex;align-items:center;gap:8px}
+.ai-avatar{width:26px;height:26px;border-radius:7px;background:linear-gradient(135deg,var(--purple),var(--cyan));display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff}
+.ai-chat-title{font-size:12px;font-weight:600;color:var(--white)}
+.ai-online{font-size:10px;color:var(--green);display:flex;align-items:center;gap:4px;margin-left:auto}
+.ai-online::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--green);box-shadow:0 0 5px var(--green)}
+.ai-msgs{padding:14px;display:flex;flex-direction:column;gap:10px}
+.ai-msg{display:flex;gap:8px;align-items:flex-start}
+.ai-msg.user{flex-direction:row-reverse}
+.ai-msg-av{width:20px;height:20px;border-radius:5px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700}
+.av-ai{background:linear-gradient(135deg,var(--purple),var(--cyan));color:#fff}
+.av-user{background:rgba(255,255,255,0.1);color:var(--muted)}
+.ai-bubble{font-size:11px;line-height:1.5;padding:8px 10px;border-radius:10px;max-width:82%}
+.bubble-ai{background:var(--glass);border:1px solid var(--glass-border);color:var(--muted)}
+.bubble-user{background:rgba(108,99,255,0.2);border:1px solid rgba(108,99,255,0.3);color:var(--white)}
+.ai-input{display:flex;gap:8px;padding:10px 14px;border-top:1px solid var(--glass-border);align-items:center}
+.ai-input-field{flex:1;background:var(--glass);border:1px solid var(--glass-border);border-radius:8px;padding:6px 10px;font-size:11px;color:var(--white);font-family:'Syne',sans-serif;outline:none}
+.ai-send{width:26px;height:26px;border-radius:7px;background:linear-gradient(135deg,var(--purple),var(--violet));border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+
+/* Privacy section */
+.privacy-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-top:40px}
+.privacy-card{background:var(--glass);border:1px solid var(--glass-border);border-radius:14px;padding:22px;display:flex;gap:14px;align-items:flex-start}
+.privacy-icon{font-size:22px;flex-shrink:0;margin-top:2px}
+.privacy-title{font-size:0.95rem;font-weight:700;color:var(--white);margin-bottom:4px}
+.privacy-desc{font-size:0.85rem;color:var(--muted);line-height:1.5}
+
+/* Screens section */
+.screens-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+.screen-card{background:var(--glass);border:1px solid var(--glass-border);border-radius:14px;padding:20px;position:relative;overflow:hidden}
+.screen-num{font-size:0.7rem;font-weight:700;letter-spacing:0.1em;color:var(--violet);text-transform:uppercase;margin-bottom:6px}
+.screen-name{font-size:1rem;font-weight:700;color:var(--white);margin-bottom:6px}
+.screen-desc{font-size:0.83rem;color:var(--muted);line-height:1.5}
+
+/* Orion family */
+.family-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-top:40px}
+.family-card{background:var(--glass);border:1px solid var(--glass-border);border-radius:14px;padding:22px;text-align:center;transition:all 0.2s}
+.family-card:hover{border-color:rgba(255,255,255,0.2);transform:translateY(-2px)}
+.family-icon{font-size:2rem;margin-bottom:12px}
+.family-name{font-size:1rem;font-weight:700;color:var(--white);margin-bottom:4px}
+.family-desc{font-size:0.82rem;color:var(--muted)}
+.family-status{display:inline-block;margin-top:10px;font-size:0.7rem;font-weight:600;padding:3px 10px;border-radius:10px}
+.status-live{background:rgba(74,222,128,0.12);color:var(--green);border:1px solid rgba(74,222,128,0.25)}
+.status-new{background:rgba(108,99,255,0.12);color:var(--violet);border:1px solid rgba(108,99,255,0.25)}
+
+/* Support section */
+.support-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-top:40px}
+.support-card{background:var(--glass);border:1px solid var(--glass-border);border-radius:16px;padding:28px}
+.support-card h3{font-size:1rem;font-weight:700;color:var(--white);margin-bottom:10px}
+.support-card p{font-size:0.88rem;color:var(--muted);line-height:1.6;margin-bottom:14px}
+.support-card a{color:var(--cyan);text-decoration:none;font-size:0.88rem;font-weight:600}
+.support-card a:hover{text-decoration:underline}
+
+/* CTA */
+.cta-section{text-align:center;padding:100px 40px;position:relative;z-index:1}
+.cta-box{background:linear-gradient(135deg,rgba(108,99,255,0.12),rgba(34,211,238,0.08));border:1px solid rgba(108,99,255,0.25);border-radius:24px;padding:64px 48px;max-width:680px;margin:0 auto}
+.cta-box h2{font-size:2.4rem;font-weight:800;letter-spacing:-0.02em;margin-bottom:16px}
+.cta-box p{font-size:1.05rem;color:var(--muted);margin-bottom:32px;line-height:1.7}
+
+/* Footer */
+footer{position:relative;z-index:1;padding:40px;border-top:1px solid var(--glass-border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;background:rgba(8,8,15,0.6)}
+.footer-brand{font-size:0.95rem;font-weight:700;background:linear-gradient(135deg,var(--violet),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.footer-copy{font-size:0.8rem;color:var(--faint)}
+.footer-links{display:flex;gap:20px}
+.footer-links a{color:var(--muted);text-decoration:none;font-size:0.82rem;transition:color 0.2s}
+.footer-links a:hover{color:var(--white)}
+
+/* Reveal animation */
+.reveal{opacity:0;transform:translateY(24px);transition:all 0.6s ease}
+.reveal.visible{opacity:1;transform:none}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+
+/* Responsive */
+@media(max-width:768px){
+  nav{padding:14px 20px}
+  .nav-links{gap:14px}
+  section{padding:70px 20px}
+  .ai-section{grid-template-columns:1fr}
+  .stats-strip{gap:30px;padding:32px 20px}
+  .cta-box{padding:40px 24px}
+  footer{flex-direction:column;padding:28px 20px;text-align:center}
+}
+</style>
+</head>
+<body>
+
+<div class="orb orb1"></div>
+<div class="orb orb2"></div>
+<div class="orb orb3"></div>
+<div class="orb orb4"></div>
+
+<nav>
+  <a href="#" class="nav-logo">Orion Process Explorer</a>
+  <div class="nav-links">
+    <a href="#features">Features</a>
+    <a href="#ai">AI</a>
+    <a href="#screens">Screens</a>
+    <a href="#support">Support</a>
+    <a href="privacy.html">Privacy</a>
+    <a href="#download" class="nav-cta">Download Free</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge"><span></span> Now on macOS 26 Tahoe · Apple Intelligence</div>
+  <h1>Your system.<br><span>Fully understood.</span></h1>
+  <p class="hero-sub">Real-time process monitoring with on-device AI. Know what every process does, why it's running, and whether it's safe to quit — in plain English.</p>
+  <div class="hero-actions">
+    <a href="#download" class="btn-primary">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2v9M4 8l4 4 4-4M2 13h12" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Download Free
+    </a>
+    <a href="#features" class="btn-secondary">See all features →</a>
+  </div>
+  <p class="hero-note">Free · macOS 26+ · Apple Silicon · No account required</p>
+
+  <!-- App window mockup -->
+  <div class="hero-window">
+    <div class="window-frame">
+      <div class="window-bar">
+        <div class="w-dot w-red"></div>
+        <div class="w-dot w-yellow"></div>
+        <div class="w-dot w-green"></div>
+        <div class="w-title">Orion Process Explorer — Live Processes</div>
+      </div>
+      <div class="window-content">
+        <div class="w-sidebar">
+          <div class="w-logo">
+            <div class="w-logo-text">Orion</div>
+            <div class="w-logo-sub">Process Explorer</div>
+          </div>
+          <div class="w-nav-label">Monitor</div>
+          <div class="w-nav-item active"><div class="w-dot-nav"></div>Live Processes</div>
+          <div class="w-nav-item"><div class="w-dot-nav"></div>Process Tree</div>
+          <div class="w-nav-item"><div class="w-dot-nav"></div>Health</div>
+          <div class="w-nav-label">System</div>
+          <div class="w-nav-item"><div class="w-dot-nav"></div>System Info</div>
+          <div class="w-nav-item"><div class="w-dot-nav"></div>Network</div>
+          <div class="w-nav-label">AI</div>
+          <div class="w-nav-item"><div class="w-dot-nav"></div>Insights</div>
+          <div class="w-nav-item"><div class="w-dot-nav"></div>Assistant</div>
+        </div>
+        <div class="w-main">
+          <div class="w-stats">
+            <div class="w-stat"><div class="w-stat-val" style="color:#22D3EE">4.2%</div><div class="w-stat-lbl">CPU</div></div>
+            <div class="w-stat"><div class="w-stat-val" style="color:#A78BFA">18.4GB</div><div class="w-stat-lbl">RAM</div></div>
+            <div class="w-stat"><div class="w-stat-val" style="color:#4ADE80">197GB</div><div class="w-stat-lbl">Free</div></div>
+            <div class="w-stat"><div class="w-stat-val" style="color:#FBBF24">248</div><div class="w-stat-lbl">Processes</div></div>
+          </div>
+          <div class="w-card">
+            <div class="w-card-head">
+              <div class="w-card-title">Live processes</div>
+              <div class="w-card-sub">Updated 1s ago</div>
+            </div>
+            <div class="w-proc">
+              <div class="w-proc-icon" style="color:#22D3EE">Xc</div>
+              <div style="flex:1"><div class="w-proc-name">Xcode</div><div class="w-proc-pid">PID 4821</div></div>
+              <div class="w-bar-wrap"><div class="w-bar"><div class="w-bar-fill" style="width:38%;background:linear-gradient(90deg,#FBBF24,#F87171)"></div></div><div class="w-pct" style="color:#FBBF24">38.2%</div></div>
+              <div class="w-mem">2.4 GB</div>
+            </div>
+            <div class="w-proc">
+              <div class="w-proc-icon" style="color:#A78BFA">Sl</div>
+              <div style="flex:1"><div class="w-proc-name">Slack</div><div class="w-proc-pid">PID 3291</div></div>
+              <div class="w-bar-wrap"><div class="w-bar"><div class="w-bar-fill" style="width:14%;background:#22D3EE"></div></div><div class="w-pct" style="color:#22D3EE">14.1%</div></div>
+              <div class="w-mem">780 MB</div>
+            </div>
+            <div class="w-proc">
+              <div class="w-proc-icon">md</div>
+              <div style="flex:1"><div class="w-proc-name">mds_stores</div><div class="w-proc-pid">PID 188</div></div>
+              <div class="w-bar-wrap"><div class="w-bar"><div class="w-bar-fill" style="width:6%;background:#4ADE80"></div></div><div class="w-pct" style="color:#4ADE80">6.1%</div></div>
+              <div class="w-mem">312 MB</div>
+            </div>
+            <div class="w-proc" style="border-bottom:none">
+              <div class="w-proc-icon">kn</div>
+              <div style="flex:1"><div class="w-proc-name">kernel_task</div><div class="w-proc-pid">PID 0</div></div>
+              <div class="w-bar-wrap"><div class="w-bar"><div class="w-bar-fill" style="width:4%;background:rgba(255,255,255,0.3)"></div></div><div class="w-pct">3.8%</div></div>
+              <div class="w-mem">—</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats-strip reveal">
+  <div class="stat-item"><div class="stat-num">9</div><div class="stat-label">Screens</div></div>
+  <div class="stat-item"><div class="stat-num">100%</div><div class="stat-label">On-device AI</div></div>
+  <div class="stat-item"><div class="stat-num">0</div><div class="stat-label">Data collected</div></div>
+  <div class="stat-item"><div class="stat-num">Free</div><div class="stat-label">Always</div></div>
+</div>
+
+<!-- FEATURES -->
+<section id="features">
+  <div class="container">
+    <div class="section-label">Everything you need</div>
+    <h2 class="section-title">Built for <span>power users</span><br>readable by everyone</h2>
+    <p class="section-sub">From raw process data to plain-English AI explanations — Orion bridges the gap between system transparency and everyday usability.</p>
+    <div class="features-grid reveal">
+      <div class="feat-card" style="--card-color:rgba(34,211,238,0.08);--icon-bg:rgba(34,211,238,0.12);--icon-border:rgba(34,211,238,0.25);--tag-bg:rgba(34,211,238,0.1);--tag-color:#22D3EE;--tag-border:rgba(34,211,238,0.2)">
+        <div class="feat-icon">⚡</div>
+        <div class="feat-title">Live Process Monitor</div>
+        <div class="feat-desc">Every process running on your system in real time. CPU%, memory, sparkline history, app icons. Sorted by impact, updated every 2 seconds.</div>
+        <span class="feat-tag">Real-time</span>
+      </div>
+      <div class="feat-card" style="--card-color:rgba(167,139,250,0.08);--icon-bg:rgba(167,139,250,0.12);--icon-border:rgba(167,139,250,0.25);--tag-bg:rgba(167,139,250,0.1);--tag-color:#A78BFA;--tag-border:rgba(167,139,250,0.2)">
+        <div class="feat-icon">🌳</div>
+        <div class="feat-title">Process Tree</div>
+        <div class="feat-desc">Parent-child hierarchy of every running process. Collapse browser subprocesses, find zombie processes, and see how your system is organised.</div>
+        <span class="feat-tag">Visual</span>
+      </div>
+      <div class="feat-card" style="--card-color:rgba(244,114,182,0.08);--icon-bg:rgba(244,114,182,0.12);--icon-border:rgba(244,114,182,0.25);--tag-bg:rgba(244,114,182,0.1);--tag-color:#F472B6;--tag-border:rgba(244,114,182,0.2)">
+        <div class="feat-icon">✨</div>
+        <div class="feat-title">AI Process Intelligence</div>
+        <div class="feat-desc">Tap any process. Orion AI tells you what it does, whether it's safe to quit, what happens if you kill it, and if macOS will restart it.</div>
+        <span class="feat-tag">Apple Intelligence</span>
+      </div>
+      <div class="feat-card" style="--card-color:rgba(74,222,128,0.08);--icon-bg:rgba(74,222,128,0.12);--icon-border:rgba(74,222,128,0.25);--tag-bg:rgba(74,222,128,0.1);--tag-color:#4ADE80;--tag-border:rgba(74,222,128,0.2)">
+        <div class="feat-icon">💬</div>
+        <div class="feat-title">Orion Assistant</div>
+        <div class="feat-desc">Ask your system anything in plain English. "Why is my system slow?" "What does mds_stores do?" Streaming AI responses powered by Apple Intelligence.</div>
+        <span class="feat-tag">Conversational AI</span>
+      </div>
+      <div class="feat-card" style="--card-color:rgba(251,191,36,0.08);--icon-bg:rgba(251,191,36,0.12);--icon-border:rgba(251,191,36,0.25);--tag-bg:rgba(251,191,36,0.1);--tag-color:#FBBF24;--tag-border:rgba(251,191,36,0.2)">
+        <div class="feat-icon">📊</div>
+        <div class="feat-title">Activity Insights</div>
+        <div class="feat-desc">Session analytics beyond raw numbers. Top impact processes, anomaly detection, behaviour breakdown, recent launches and restart events.</div>
+        <span class="feat-tag">Analytics</span>
+      </div>
+      <div class="feat-card" style="--card-color:rgba(108,99,255,0.08);--icon-bg:rgba(108,99,255,0.12);--icon-border:rgba(108,99,255,0.25);--tag-bg:rgba(108,99,255,0.1);--tag-color:#6C63FF;--tag-border:rgba(108,99,255,0.2)">
+        <div class="feat-icon">🖥</div>
+        <div class="feat-title">System Info</div>
+        <div class="feat-desc">Chip name, core counts (P/E/GPU/Neural), unified memory, macOS version, kernel, uptime, serial number, storage breakdown, and network interfaces.</div>
+        <span class="feat-tag">Complete</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- AI SECTION -->
+<section id="ai" style="padding-top:0">
+  <div class="container">
+    <div class="ai-section reveal">
+      <div>
+        <div class="section-label">On-device Apple Intelligence</div>
+        <h2 class="section-title" style="font-size:clamp(1.6rem,2.8vw,2.2rem)">AI that actually <span>explains</span> your system</h2>
+        <p style="color:var(--muted);line-height:1.7;margin-bottom:24px;font-size:0.95rem">Orion uses Apple Intelligence via the FoundationModels framework. Everything runs locally on Apple Silicon — no internet, no cloud, no data ever leaves your device.</p>
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <div style="display:flex;align-items:center;gap:10px;font-size:0.88rem;color:var(--muted)">
+            <div style="width:20px;height:20px;border-radius:6px;background:rgba(74,222,128,0.15);border:1px solid rgba(74,222,128,0.3);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+              <svg width="10" height="10" viewBox="0 0 10 10"><path d="M2 5l2 2 4-4" stroke="#4ADE80" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>
+            </div>
+            Plain-English explanations for every process
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;font-size:0.88rem;color:var(--muted)">
+            <div style="width:20px;height:20px;border-radius:6px;background:rgba(74,222,128,0.15);border:1px solid rgba(74,222,128,0.3);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+              <svg width="10" height="10" viewBox="0 0 10 10"><path d="M2 5l2 2 4-4" stroke="#4ADE80" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>
+            </div>
+            Safe-to-kill risk assessment before you quit anything
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;font-size:0.88rem;color:var(--muted)">
+            <div style="width:20px;height:20px;border-radius:6px;background:rgba(74,222,128,0.15);border:1px solid rgba(74,222,128,0.3);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+              <svg width="10" height="10" viewBox="0 0 10 10"><path d="M2 5l2 2 4-4" stroke="#4ADE80" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>
+            </div>
+            Daily health score with actionable recommendations
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;font-size:0.88rem;color:var(--muted)">
+            <div style="width:20px;height:20px;border-radius:6px;background:rgba(74,222,128,0.15);border:1px solid rgba(74,222,128,0.3);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+              <svg width="10" height="10" viewBox="0 0 10 10"><path d="M2 5l2 2 4-4" stroke="#4ADE80" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>
+            </div>
+            Conversational assistant with full system context
+          </div>
+        </div>
+      </div>
+      <div class="ai-chat">
+        <div class="ai-chat-head">
+          <div class="ai-avatar">AI</div>
+          <div class="ai-chat-title">Orion Assistant</div>
+          <div class="ai-online">On-device</div>
+        </div>
+        <div class="ai-msgs">
+          <div class="ai-msg user">
+            <div class="ai-msg-av av-user">M</div>
+            <div class="ai-bubble bubble-user">Why is my system running slow?</div>
+          </div>
+          <div class="ai-msg">
+            <div class="ai-msg-av av-ai">AI</div>
+            <div class="ai-bubble bubble-ai">Xcode is using 38% CPU — it's re-indexing after your last file save. This is normal and will settle in ~2 min. <span style="color:#A78BFA">No action needed.</span></div>
+          </div>
+          <div class="ai-msg user">
+            <div class="ai-msg-av av-user">M</div>
+            <div class="ai-bubble bubble-user">What does mds_stores do?</div>
+          </div>
+          <div class="ai-msg">
+            <div class="ai-msg-av av-ai">AI</div>
+            <div class="ai-bubble bubble-ai">mds_stores is Spotlight's search index database. <span style="color:#4ADE80">Safe to leave running</span> — killing it would break Spotlight until macOS restarts it automatically.</div>
+          </div>
+        </div>
+        <div class="ai-input">
+          <input class="ai-input-field" type="text" placeholder="Ask about any process...">
+          <div class="ai-send">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6h8M6 2l4 4-4 4" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SCREENS -->
+<section id="screens">
+  <div class="container">
+    <div class="section-label center">9 powerful screens</div>
+    <h2 class="section-title center">Everything <span>in one app</span></h2>
+    <p class="section-sub center">From live process data to AI-powered insights — every screen is designed for clarity, speed, and beauty.</p>
+    <div class="screens-grid reveal">
+      <div class="screen-card"><div class="screen-num">01 · Monitor</div><div class="screen-name">Live Processes</div><div class="screen-desc">Real-time dashboard with CPU bars, memory usage, sparklines, and app icons. Sort, filter, search.</div></div>
+      <div class="screen-card"><div class="screen-num">02 · Monitor</div><div class="screen-name">Process Tree</div><div class="screen-desc">Hierarchical parent-child view. Collapse, expand, search. Zombie and orphan detection.</div></div>
+      <div class="screen-card"><div class="screen-num">03 · Monitor</div><div class="screen-name">Activity Insights</div><div class="screen-desc">Session analytics, anomaly detection, behaviour breakdown, timeline, and recent events.</div></div>
+      <div class="screen-card"><div class="screen-num">04 · Monitor</div><div class="screen-name">Health</div><div class="screen-desc">AI-generated daily health score (0–100), top offenders list, and one key recommendation.</div></div>
+      <div class="screen-card"><div class="screen-num">05 · System</div><div class="screen-name">System Info</div><div class="screen-desc">Chip, cores, memory, macOS version, build, kernel, uptime, serial number. Export to PDF.</div></div>
+      <div class="screen-card"><div class="screen-num">06 · System</div><div class="screen-name">Storage</div><div class="screen-desc">Visual disk breakdown — used, system, free — with capacity and availability at a glance.</div></div>
+      <div class="screen-card"><div class="screen-num">07 · System</div><div class="screen-name">Network</div><div class="screen-desc">All interfaces with IP addresses and active status. Wi-Fi, Ethernet, VPN, AirDrop, Thunderbolt.</div></div>
+      <div class="screen-card"><div class="screen-num">08 · AI</div><div class="screen-name">AI Insights</div><div class="screen-desc">Structured AI intelligence per process — purpose, risk, category, kill impact, restart behaviour.</div></div>
+      <div class="screen-card"><div class="screen-num">09 · AI</div><div class="screen-name">Assistant</div><div class="screen-desc">Conversational AI with full system context. Streaming responses. Ask anything about your system.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- PRIVACY -->
+<section>
+  <div class="container center">
+    <div class="section-label">Privacy first</div>
+    <h2 class="section-title">Zero data. <span>Zero compromise.</span></h2>
+    <p class="section-sub">Orion Process Explorer was designed from day one to collect nothing. No accounts, no telemetry, no cloud.</p>
+    <div class="privacy-grid reveal">
+      <div class="privacy-card"><div class="privacy-icon">🔒</div><div><div class="privacy-title">No data collected</div><div class="privacy-desc">We collect absolutely nothing about you, your device, or your usage. Zero.</div></div></div>
+      <div class="privacy-card"><div class="privacy-icon">🧠</div><div><div class="privacy-title">On-device AI only</div><div class="privacy-desc">All AI runs locally via Apple Intelligence. Your process data never leaves your device.</div></div></div>
+      <div class="privacy-card"><div class="privacy-icon">📡</div><div><div class="privacy-title">No tracking</div><div class="privacy-desc">No analytics SDK, no crash reporter, no telemetry of any kind embedded in this app.</div></div></div>
+      <div class="privacy-card"><div class="privacy-icon">🆓</div><div><div class="privacy-title">No account required</div><div class="privacy-desc">Download and use immediately. No sign-in, no email, no subscription. Ever.</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ORION FAMILY -->
+<section style="padding-top:0">
+  <div class="container center">
+    <div class="section-label">The Orion family</div>
+    <h2 class="section-title">More apps <span>from the same maker</span></h2>
+    <div class="family-grid reveal">
+      <div class="family-card">
+        <div class="family-icon">🧹</div>
+        <div class="family-name">OrionClean</div>
+        <div class="family-desc">AI-powered system cleaner & optimizer for macOS</div>
+        <span class="family-status status-live">Live on App Store</span>
+      </div>
+      <div class="family-card">
+        <div class="family-icon">⚡</div>
+        <div class="family-name">Orion Process Explorer</div>
+        <div class="family-desc">AI process monitor & system inspector for macOS 26</div>
+        <span class="family-status status-new">Coming Soon</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SUPPORT -->
+<section id="support">
+  <div class="container center">
+    <div class="section-label">We're here to help</div>
+    <h2 class="section-title">Support &amp; <span>Contact</span></h2>
+    <p class="section-sub">Got a question, found a bug, or have a feature idea? Reach out — we respond to every message.</p>
+    <div class="support-grid reveal">
+      <div class="support-card">
+        <h3>📧 Email Support</h3>
+        <p>Send us a message and we'll get back to you within 24 hours.</p>
+        <a href="mailto:mrinalsinghraja@gmail.com">mrinalsinghraja@gmail.com →</a>
+      </div>
+      <div class="support-card">
+        <h3>🐛 Bug Reports</h3>
+        <p>Found something that doesn't work right? Open an issue on GitHub and we'll fix it fast.</p>
+        <a href="https://github.com/mrinalsinghraja/orionprocessexplorer/issues" target="_blank">Open an issue on GitHub →</a>
+      </div>
+      <div class="support-card">
+        <h3>💡 Feature Requests</h3>
+        <p>Have an idea that would make Orion better? We'd love to hear it.</p>
+        <a href="https://github.com/mrinalsinghraja/orionprocessexplorer/discussions" target="_blank">Start a discussion →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<div class="cta-section" id="download">
+  <div class="cta-box reveal">
+    <h2>See your system <span style="background:linear-gradient(135deg,var(--violet),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">clearly.</span></h2>
+    <p>Free. On-device AI. No account. No data collected. Built for macOS 26 Tahoe.</p>
+    <a href="#" class="btn-primary" style="display:inline-flex;margin:0 auto">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2v9M4 8l4 4 4-4M2 13h12" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Download on the App Store
+    </a>
+    <p style="margin-top:14px;font-size:0.78rem;color:var(--faint)">macOS 26+ · Apple Silicon · Free · No account</p>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div>
+    <div class="footer-brand">Orion Process Explorer</div>
+    <div class="footer-copy">© 2026 Mrinal Singh Raja</div>
+  </div>
+  <div class="footer-links">
+    <a href="privacy.html">Privacy Policy</a>
+    <a href="https://github.com/mrinalsinghraja/orionprocessexplorer" target="_blank">GitHub</a>
+    <a href="mailto:mrinalsinghraja@gmail.com">Contact</a>
+    <a href="https://mrinalsinghraja.github.io/orionclean" target="_blank">OrionClean</a>
+  </div>
+</footer>
+
+<script>
+const reveals = document.querySelectorAll('.reveal');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach((entry, i) => {
+    if (entry.isIntersecting) {
+      setTimeout(() => entry.target.classList.add('visible'), i * 80);
+    }
+  });
+}, { threshold: 0.08 });
+reveals.forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
